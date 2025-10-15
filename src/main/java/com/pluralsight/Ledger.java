@@ -80,7 +80,6 @@ public class Ledger {
 
 
                     break;
-                break;
 
                 case "L":
                     System.out.println("Option L. Selected");
