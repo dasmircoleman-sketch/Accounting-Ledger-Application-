@@ -1,51 +1,85 @@
 package com.pluralsight;
 
 import java.awt.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class Ledger {
     public static void main(String[] args) {
+        //
         Scanner myscanner = new Scanner(System.in);
-        String choice = myscanner.nextLine();
-        boolean isRight;
-        while( true)
+        //
+        boolean appProcessing = true;
+        while( appProcessing)
         {
+            //
+            System.out.println("💰💰Ledger Home Screen💰💰");
+            System.out.println("Choose an Option:");
+            System.out.println("D. Add Deposit");
+            System.out.println("P. Make A Payment");
+            System.out.println("L. Ledger");
+            System.out.println("X. Exit");
+            System.out.println("Please Make A Selection");
+            String choice = myscanner.nextLine();
 
-            switch (choice) {
-                case "C":
-                    System.out.println("💰💰Ledger Home Screen💰💰");
-                    System.out.println("Choose an Option:");
-                    System.out.println("D. Add Deposit");
-                    System.out.println("P. Make A Payment");
-                    System.out.println("L. Ledger");
-                    System.out.println("X. Exit");
+            switch (choice.toUpperCase()) {
+                case "D":
+                System.out.println("Option D. Selected");
+                System.out.println("Make a Deposit");
+                System.out.println("What is the description of the deposit?");
+                String description = myscanner.nextLine();
+                System.out.println("Name your Specific Vendor.");
+                String vendor = myscanner.nextLine();
+                System.out.println("What is the correct amount of the deposit");
+                double amount =myscanner.nextDouble();
+                Transaction newTransaction = new Transaction(LocalDate.now(), LocalTime.now(),description,vendor,amount);
+                    try {
+                        BufferedWriter csvToWriteTo =  new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
+                        //add to a new line
+                        csvToWriteTo.newLine();
+                        csvToWriteTo.write(newTransaction.getDate()+"|"+newTransaction.getTime()+
+                                "|"+newTransaction.getDescription()+"|"+
+                                newTransaction.getVendor()+"|"+newTransaction.getAmount());
+                        csvToWriteTo.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Deposit Accepted, Thank you ❤️💰");
 
-                    System.out.println("Please Make A Selection");
 
                     break;
-                case "D":
-
-                    System.out.println("Option D. Selected");
-
-                System.out.println("Make a Deposit");
-                System.out.println("please select an Acount to Make deposit");
-                System.out.println(" C. Checkings");
-                System.out.println("S. Savings");
-                System.out.println("Account Money Transfer");
-                System.out.println("Deposit Check");
-                System.out.println("deposit Money Order");
-
-                break;
 
                 case "P":
                     System.out.println("Option P. Selected");
-
                 System.out.println("Make A Payment");
-                System.out.println("Pay Credit Cards");
-                System.out.println("Pay Loans");
-                System.out.println(" 401k or IRA Contributions");
-                System.out.println("Pay Recurring Bills & Subscriptions");
+                    System.out.println("Option D. Selected");
+                    System.out.println("Make a Payment");
+                    System.out.println("What is the description of the payment?");
+                    String paymentDescription = myscanner.nextLine();
+                    System.out.println("Name your Specific Vendor.");
+                    String paymentVendor = myscanner.nextLine();
+                    System.out.println("What is the correct amount of the deposit");
+                    double paymentAmount =myscanner.nextDouble();
+                    Transaction newPayment = new Transaction(LocalDate.now(), LocalTime.now(),paymentDescription,paymentVendor,-paymentAmount);
+                    try {
+                        BufferedWriter csvToWriteTo =  new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
+                        //add to a new line
+                        csvToWriteTo.newLine();
+                        csvToWriteTo.write(newPayment.getDate()+"|"+newPayment.getTime()+
+                                "|"+newPayment.getDescription()+"|"+
+                                newPayment.getVendor()+"|"+newPayment.getAmount());
+                        csvToWriteTo.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Payment Recieved, Thank you ❤️💰");
 
+
+                    break;
                 break;
 
                 case "L":
@@ -73,6 +107,7 @@ public class Ledger {
                     System.out.println("Option X. Selected");
                     System.out.println("you selected Option X." +
                             "........... Exiting App.");
+                    appProcessing = false;
                     break;
 
                 default:
