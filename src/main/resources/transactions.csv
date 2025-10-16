@@ -1,5 +1,5 @@
 date|time|description|vendor|amount
-2023-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
+202-04-15|10:13:25|ergonomic keyboard|Amazon|-89.50
 2023-04-15|11:15:00|Invoice 1001 paid|Joe|1500.00
 2023-04-16|09:45:10|monthly subscription|Spotify|-9.99
 2023-04-16|12:30:00|freelance payment|Upwork|850.00
@@ -30,3 +30,5 @@ date|time|description|vendor|amount
 2025-10-15|11:45:02.294631900|pay electric bill|PSE&G|-340.0
 2025-10-15|13:26:40.298290100|rent|realtor|-2000.0
 2025-10-15|13:26:40.298290100|rent|realtor|-2000.0
+2025-10-16|15:41:48.310352900|Salary|YUU|10000.0
+2025-10-16|15:48:45.754756800|Rent|Landlord|-1800.0

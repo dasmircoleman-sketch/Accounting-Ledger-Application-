@@ -33,7 +33,7 @@ public class Ledger {
             String choice = myscanner.nextLine();
 
 
-            switch (choice.toUpperCase()) {
+            switch (choice.toUpperCase().trim()) {
                 case "D":
                     System.out.println("Option D. Selected");
                     System.out.println("Make a Deposit");
@@ -53,7 +53,8 @@ public class Ledger {
                                 newTransaction.getVendor() + "|" + newTransaction.getAmount());
                         csvToWriteTo.close();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        //throw new RuntimeException(e);
+                        System.out.println("ERROR: " + e.getLocalizedMessage());
                     }
                     System.out.println("Deposit Accepted, Thank you ❤️💰");
 
@@ -62,8 +63,6 @@ public class Ledger {
                 case "P":
                     System.out.println("Option P. Selected");
                     System.out.println("Make A Payment");
-                    System.out.println("Option D. Selected");
-                    System.out.println("Make a Payment");
                     System.out.println("What is the description of the payment?");
                     String paymentDescription = myscanner.nextLine();
                     System.out.println("Name your Specific Vendor.");
@@ -91,7 +90,7 @@ public class Ledger {
                         BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
 
                         //ignore the header row
-                        String line = reader.readLine();
+                        String line= reader.readLine();
 
                         // Remaining lines: transaction records
                         while ((line = reader.readLine()) != null) {
@@ -103,7 +102,7 @@ public class Ledger {
                             LocalTime time = LocalTime.parse(parts[1]);
                             String descriptionR = parts[2];
                             String vendorR = parts[3];
-                            Double amountR = Double.parseDouble(parts[4]);
+                            double amountR = Double.parseDouble(parts[4]);
 
                             //create a transaction from the data
                             Transaction newTransactionR = new Transaction(date, time, descriptionR, vendorR, amountR);
@@ -117,6 +116,7 @@ public class Ledger {
                     } catch (IOException e) {
                         System.out.println("Error reading transaction file: " + e.getMessage());
                     }
+
                     boolean inLedgerMenu = true;
                     while (inLedgerMenu) {
 
@@ -227,11 +227,12 @@ public class Ledger {
                                             System.out.println("Running Previous Month report...");
                                             LocalDate now = LocalDate.now();
                                             LocalDate prevMonth = now.minusMonths(1);
+                                               transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
                                             for (Transaction t : transactionArrayList) {
 
                                                 if (t.getDate().getMonth() == prevMonth.getMonth() &&
                                                         t.getDate().getYear() == prevMonth.getYear())
-                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+
                                                 {
                                                     DateTimeFormatter mTD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                                                     String headerMonToD = ("\nDate\t\t| Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
@@ -245,20 +246,35 @@ public class Ledger {
                                         case "3":
                                             System.out.println("Running Year To Date report...");
                                             int currentYear = LocalDate.now().getYear();
-                                            for (Transaction t : transactionArrayList) {
-                                                if (t.getDate().getYear() == currentYear)
-                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
 
+                                            for (Transaction t : transactionArrayList) {
+                                                if (t.getDate().getYear() == currentYear) {
+                                                   // transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                                    DateTimeFormatter mTD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                                    String headerMonToD = ("\nDate\t\t| Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                                    String formattedDate = t.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                                                    String formatTrans = String.format("%-12s| %-60s| %-22s|%10.2f\n",
+                                                            formattedDate, t.getDescription(), t.getVendor(), t.getAmount());
+                                                    //todo: formate transaction
+                                                    System.out.println(t);
+                                                }
                                             }
                                             break;
                                         case "4":
                                             System.out.println("Running Previous Year report...");
                                             int prevYear = LocalDate.now().getYear() - 1;
                                             for (Transaction t : transactionArrayList) {
-                                                if (t.getDate().getYear() == prevYear)
-                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
-                                                {
+                                                if (t.getDate().getYear() == prevYear) {
+                                                    DateTimeFormatter mTD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                                    String headerMonToD = ("\nDate\t\t| Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                                    String formattedDate = t.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                                                    String formatTrans = String.format("%-12s| %-60s| %-22s|%10.2f\n",
+                                                            formattedDate, t.getDescription(), t.getVendor(), t.getAmount());
+                                                   // transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                                    System.out.println(t);
                                                 }
+
+
                                             }
                                             break;
                                         case "5":
@@ -266,8 +282,14 @@ public class Ledger {
                                             String vendorSearch = myscanner.nextLine();
                                             for (Transaction t : transactionArrayList) {
                                                 if (t.getVendor().equalsIgnoreCase(vendorSearch))
-                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                                  //  transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
                                                 {
+                                                    DateTimeFormatter mTD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                                    String headerMonToD = ("\nDate\t\t| Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                                    String formattedDate = t.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                                                    String formatTrans = String.format("%-12s| %-60s| %-22s|%10.2f\n",
+                                                            formattedDate, t.getDescription(), t.getVendor(), t.getAmount());
+                                                    System.out.println(t);
                                                 }
                                             }
                                             break;
@@ -306,6 +328,8 @@ public class Ledger {
             }
         }
     }
+
+
 }
         //  transaction objects print out. ,
         // sout needs the transaction class to override to string class overrides
