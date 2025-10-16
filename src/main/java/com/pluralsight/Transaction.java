@@ -19,8 +19,6 @@ public class Transaction {
         this.description = description;
         this.vendor = vendor;
         this.amount = amount;
-
-
     }
 
     public LocalDate getDate() {
