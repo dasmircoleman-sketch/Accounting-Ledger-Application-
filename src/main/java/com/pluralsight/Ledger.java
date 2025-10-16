@@ -13,12 +13,13 @@ import static com.pluralsight.Transaction.printTransactions;
 
 public class Ledger {
     public static ArrayList<Transaction> transactionArrayList = new ArrayList<Transaction>();
+
     public static void main(String[] args) {
         //
 
         Scanner myscanner = new Scanner(System.in);
         //
- // code starts inside a boolean loop
+        // code starts inside a boolean loop
         boolean appProcessing = true;
         while (appProcessing) {
             //
@@ -110,7 +111,7 @@ public class Ledger {
                             transactionArrayList.add(newTransactionR);
                         }
                         //formatted transactions
-                       // printTransactions(transactionArrayList);
+                        // printTransactions(transactionArrayList);
 
                         reader.close();
                     } catch (IOException e) {
@@ -133,20 +134,20 @@ public class Ledger {
                                 //run a for loop over transaction array list
                                 //print each line out
                                 // Display all entries (newest first)
-                               // for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
-                                 //   Transaction t = transactionArrayList.get(i);
-                                   // System.out.println(t); // relies on Transaction.toString()
-                              //  }
+                                // for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
+                                //   Transaction t = transactionArrayList.get(i);
+                                // System.out.println(t); // relies on Transaction.toString()
+                                //  }
                                 printTransactions(transactionArrayList);
                                 break;
                             case "D":
                                 // Display only deposits (amount > 0)
-                             //   for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
-                                   // Transaction t = transactionArrayList.get(i);
-                                    //if (t.getAmount() > 0) {
-                                     //   System.out.println(t);
-                                    //}
-                               // }
+                                //   for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
+                                // Transaction t = transactionArrayList.get(i);
+                                //if (t.getAmount() > 0) {
+                                //   System.out.println(t);
+                                //}
+                                // }
 
                                 transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
 
@@ -219,23 +220,25 @@ public class Ledger {
                                                     String formatTrans = String.format("%-12s| %-60s| %-22s|%10.2f\n",
                                                             formattedDate, t.getDescription(), t.getVendor(), t.getAmount());
                                                     System.out.print(formatTrans);
-                                                    break;
                                                 }
-
                                             }
-                                    }
-                                }
                                             break;
                                         case "2":
                                             System.out.println("Running Previous Month report...");
                                             LocalDate now = LocalDate.now();
                                             LocalDate prevMonth = now.minusMonths(1);
                                             for (Transaction t : transactionArrayList) {
+
                                                 if (t.getDate().getMonth() == prevMonth.getMonth() &&
                                                         t.getDate().getYear() == prevMonth.getYear())
                                                     transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
                                                 {
-
+                                                    DateTimeFormatter mTD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                                    String headerMonToD = ("\nDate\t\t| Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                                    String formattedDate = t.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                                                    String formatTrans = String.format("%-12s| %-60s| %-22s|%10.2f\n",
+                                                            formattedDate, t.getDescription(), t.getVendor(), t.getAmount());
+                                                    System.out.print(formatTrans);
                                                 }
                                             }
                                             break;
@@ -283,9 +286,9 @@ public class Ledger {
                                 // Exit the Ledger submenu loop and return to Home
                                 inLedgerMenu = false;
                                 break;
-                           // default:
-                              //  System.out.println("Invalid selection. Try again.");
-                              //  break;
+                            // default:
+                            //  System.out.println("Invalid selection. Try again.");
+                            //  break;
 
                             case "X":
                                 System.out.println("Option X. Selected");
@@ -302,7 +305,8 @@ public class Ledger {
 
             }
         }
-
+    }
+}
         //  transaction objects print out. ,
         // sout needs the transaction class to override to string class overrides
         //  . If it doesn’t, you’ll just see memory references like . transaction783920

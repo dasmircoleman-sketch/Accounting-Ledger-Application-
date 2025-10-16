@@ -1,8 +1,12 @@
 package com.pluralsight;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -14,6 +18,7 @@ public class Transaction {
     private String description;
     private String vendor;
     private double amount;
+
     // constructor created within the class
     // constructor and class holds same name & similar properties
     public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
@@ -63,6 +68,7 @@ public class Transaction {
     public void setAmount(double amount) {
         this.amount = amount;
     }
+
     public static void printTransactions(List<Transaction> transactions) {
 
         transactions.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
@@ -81,6 +87,5 @@ public class Transaction {
                     formattedDate, formattedTime, t.getDescription(), t.getVendor(), t.getAmount());
             System.out.print(formatTrans);
         }
-
     }
 }
