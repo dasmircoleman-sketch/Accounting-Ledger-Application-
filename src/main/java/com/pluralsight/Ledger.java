@@ -4,8 +4,12 @@ import java.awt.*;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
+
+import static com.pluralsight.Transaction.printTransactions;
 
 public class Ledger {
     public static ArrayList<Transaction> transactionArrayList = new ArrayList<Transaction>();
@@ -14,9 +18,9 @@ public class Ledger {
 
         Scanner myscanner = new Scanner(System.in);
         //
-
+ // code starts inside a boolean loop
         boolean appProcessing = true;
-        while( appProcessing) {
+        while (appProcessing) {
             //
             System.out.println("💰💰Ledger Home Screen💰💰");
             System.out.println("Choose an Option:");
@@ -101,10 +105,12 @@ public class Ledger {
                             Double amountR = Double.parseDouble(parts[4]);
 
                             //create a transaction from the data
-                            Transaction newTransactionR = new Transaction(date, time, descriptionR,vendorR, amountR);
+                            Transaction newTransactionR = new Transaction(date, time, descriptionR, vendorR, amountR);
                             //add the transaction to the array list
                             transactionArrayList.add(newTransactionR);
                         }
+                        //formatted transactions
+                       // printTransactions(transactionArrayList);
 
                         reader.close();
                     } catch (IOException e) {
@@ -114,142 +120,188 @@ public class Ledger {
                     while (inLedgerMenu) {
 
                         System.out.println("Option L. Selected");
-                    System.out.println("ledger Entries");
-                    System.out.println("A. All");
-                    System.out.println("D. Deposits");
-                    System.out.println("P. Payments");
-                    System.out.println("R. Reports");
-                    System.out.println("H. Return to Home Screen");
-                    System.out.println("Please Make A Selection");
-                    String selection = myscanner.nextLine();
-                    switch (selection.toUpperCase()) {
-                        case "A":
-                            //run a for loop over transaction array list
-                            //print each line out
-                            // Display all entries (newest first)
-                            for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
-                                Transaction t = transactionArrayList.get(i);
-                                System.out.println(t); // relies on Transaction.toString()
-                            }
-                            break;
-                        case "D":
-                            // Display only deposits (amount > 0)
-                            for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
-                                Transaction t = transactionArrayList.get(i);
-                                if (t.getAmount() > 0) {
-                                    System.out.println(t);
+                        System.out.println("ledger Entries");
+                        System.out.println("A. All");
+                        System.out.println("D. Deposits");
+                        System.out.println("P. Payments");
+                        System.out.println("R. Reports");
+                        System.out.println("H. Return to Home Screen");
+                        System.out.println("Please Make A Selection");
+                        String selection = myscanner.nextLine();
+                        switch (selection.toUpperCase()) {
+                            case "A":
+                                //run a for loop over transaction array list
+                                //print each line out
+                                // Display all entries (newest first)
+                               // for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
+                                 //   Transaction t = transactionArrayList.get(i);
+                                   // System.out.println(t); // relies on Transaction.toString()
+                              //  }
+                                printTransactions(transactionArrayList);
+                                break;
+                            case "D":
+                                // Display only deposits (amount > 0)
+                             //   for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
+                                   // Transaction t = transactionArrayList.get(i);
+                                    //if (t.getAmount() > 0) {
+                                     //   System.out.println(t);
+                                    //}
+                               // }
+
+                                transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+
+                                DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+                                String header = ("\nDate\t\t| Time\t\t | Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                System.out.print(header);
+
+                                for (Transaction t : transactionArrayList) {
+                                    if (t.getAmount() > 0) {
+                                        String formattedDate = t.getDate().format(dateFormat);
+                                        String formattedTime = t.getTime().format(timeFormat);
+
+                                        String formatTrans = String.format("%-12s| %-11s| %-60s| %-22s|%10.2f\n",
+                                                formattedDate, formattedTime, t.getDescription(), t.getVendor(), t.getAmount());
+                                        System.out.print(formatTrans);
+                                    }
+
                                 }
-                            }
-                            break;
-                        case "P":
-                            // Display only payments (amount < 0)
-                            for (int i = transactionArrayList.size() - 1; i >= 0; i--) {
-                                Transaction t = transactionArrayList.get(i);
-                                if (t.getAmount() < 0) {
-                                    System.out.println(t);
+                                break;
+                            case "P":
+                                // Display only payments (amount < 0)
+                                transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+
+                                DateTimeFormatter dateP = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                DateTimeFormatter timeP = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+                                String headerP = ("\nDate\t\t| Time\t\t | Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                System.out.print(headerP);
+
+                                for (Transaction t : transactionArrayList) {
+                                    if (t.getAmount() < 0) {
+                                        String formattedDate = t.getDate().format(dateP);
+                                        String formattedTime = t.getTime().format(timeP);
+
+                                        String formatTrans = String.format("%-12s| %-11s| %-60s| %-22s|%10.2f\n",
+                                                formattedDate, formattedTime, t.getDescription(), t.getVendor(), t.getAmount());
+                                        System.out.print(formatTrans);
+                                    }
+
                                 }
-                            }
-                            break;
-                        case "R":
-                            // Reports menu (you can nest another switch here)
-                            boolean inReportsMenu = true;
-                            while (inReportsMenu) {
-                                System.out.println("Reports Menu");
-                            System.out.println("1. Month To Date");
-                            System.out.println("2. Previous Month");
-                            System.out.println("3. Year To Date");
-                            System.out.println("4. Previous Year");
-                            System.out.println("5. Search by Vendor");
-                            System.out.println("0. Back");
-                            String reportSelection = myscanner.nextLine();
-                            // handle reportSelection with another switch
-                                switch (reportSelection) {
-                                    case "1":
-                                        System.out.println("Running Month To Date report...");
-                                        // filter transactionArrayList by current month
-                                        for (Transaction t : transactionArrayList) {
-                                            if (t.getDate().getMonth() == LocalDate.now().getMonth() &&
-                                                    t.getDate().getYear() == LocalDate.now().getYear()) {
-                                                System.out.println(t);
+                                break;
+                            case "R":
+                                // Reports menu (you can nest another switch here)
+                                boolean inReportsMenu = true;
+                                while (inReportsMenu) {
+                                    System.out.println("Reports Menu");
+                                    System.out.println("1. Month To Date");
+                                    System.out.println("2. Previous Month");
+                                    System.out.println("3. Year To Date");
+                                    System.out.println("4. Previous Year");
+                                    System.out.println("5. Search by Vendor");
+                                    System.out.println("0. Back");
+                                    String reportSelection = myscanner.nextLine();
+                                    // handle reportSelection with another switch
+                                    switch (reportSelection) {
+                                        case "1":
+                                            System.out.println("Running Month To Date report...");
+                                            // filter transactionArrayList by current month
+                                            transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                            for (Transaction t : transactionArrayList) {
+
+                                                if (t.getDate().getMonth() == LocalDate.now().getMonth() &&
+                                                        t.getDate().getYear() == LocalDate.now().getYear()) {
+
+                                                    DateTimeFormatter mTD = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                                                    String headerMonToD = ("\nDate\t\t| Description\t\t\t\t\t\t\t\t\t\t\t\t   | Vendor\t\t\t\t   |   Amount\n");
+                                                    String formattedDate = t.getDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                                                    String formatTrans = String.format("%-12s| %-60s| %-22s|%10.2f\n",
+                                                            formattedDate, t.getDescription(), t.getVendor(), t.getAmount());
+                                                    System.out.print(formatTrans);
+                                                    break;
+                                                }
+
                                             }
-                                        }
-                                        break;
-                                    case "2":
-                                        System.out.println("Running Previous Month report...");
-                                        LocalDate now = LocalDate.now();
-                                        LocalDate prevMonth = now.minusMonths(1);
-                                        for (Transaction t : transactionArrayList) {
-                                            if (t.getDate().getMonth() == prevMonth.getMonth() &&
-                                                    t.getDate().getYear() == prevMonth.getYear()) {
-                                                System.out.println(t);
-                                            }
-                                        }
-                                        break;
-                                    case "3":
-                                        System.out.println("Running Year To Date report...");
-                                        int currentYear = LocalDate.now().getYear();
-                                        for (Transaction t : transactionArrayList) {
-                                            if (t.getDate().getYear() == currentYear) {
-                                                System.out.println(t);
-                                            }
-                                        }
-                                        break;
-                                    case "4":
-                                        System.out.println("Running Previous Year report...");
-                                        int prevYear = LocalDate.now().getYear() - 1;
-                                        for (Transaction t : transactionArrayList) {
-                                            if (t.getDate().getYear() == prevYear) {
-                                                System.out.println(t);
-                                            }
-                                        }
-                                        break;
-                                    case "5":
-                                        System.out.println("Enter vendor name to search:");
-                                        String vendorSearch = myscanner.nextLine();
-                                        for (Transaction t : transactionArrayList) {
-                                            if (t.getVendor().equalsIgnoreCase(vendorSearch)) {
-                                                System.out.println(t);
-                                            }
-                                        }
-                                        break;
-                                    case "0":
-                                        // Exit Reports submenu
-                                        inReportsMenu = false;
-                                        break;
-                                    default:
-                                        System.out.println("Invalid selection. Try again.");
-                                        break;
+                                    }
                                 }
-                            }
-                            break;
+                                            break;
+                                        case "2":
+                                            System.out.println("Running Previous Month report...");
+                                            LocalDate now = LocalDate.now();
+                                            LocalDate prevMonth = now.minusMonths(1);
+                                            for (Transaction t : transactionArrayList) {
+                                                if (t.getDate().getMonth() == prevMonth.getMonth() &&
+                                                        t.getDate().getYear() == prevMonth.getYear())
+                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                                {
 
+                                                }
+                                            }
+                                            break;
+                                        case "3":
+                                            System.out.println("Running Year To Date report...");
+                                            int currentYear = LocalDate.now().getYear();
+                                            for (Transaction t : transactionArrayList) {
+                                                if (t.getDate().getYear() == currentYear)
+                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
 
-                        break;
-                        case "H":
-                            // Exit the Ledger submenu loop and return to Home
-                            inLedgerMenu = false;
-                            break;
-                        default:
-                            System.out.println("Invalid selection. Try again.");
-                            break;
+                                            }
+                                            break;
+                                        case "4":
+                                            System.out.println("Running Previous Year report...");
+                                            int prevYear = LocalDate.now().getYear() - 1;
+                                            for (Transaction t : transactionArrayList) {
+                                                if (t.getDate().getYear() == prevYear)
+                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                                {
+                                                }
+                                            }
+                                            break;
+                                        case "5":
+                                            System.out.println("Enter vendor name to search:");
+                                            String vendorSearch = myscanner.nextLine();
+                                            for (Transaction t : transactionArrayList) {
+                                                if (t.getVendor().equalsIgnoreCase(vendorSearch))
+                                                    transactionArrayList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
+                                                {
+                                                }
+                                            }
+                                            break;
+                                        case "0":
+                                            // Exit Reports submenu
+                                            inReportsMenu = false;
+                                            break;
+                                        default:
+                                            System.out.println("Invalid selection. Try again.");
+                                            break;
+                                    }
+                                }
+                                break;
 
-                case "X":
-                    System.out.println("Option X. Selected");
-                    System.out.println("you selected Option X." +
-                            "........... Exiting App.");
-                    appProcessing = false;
-                    break;
+                            case "H":
+                                // Exit the Ledger submenu loop and return to Home
+                                inLedgerMenu = false;
+                                break;
+                           // default:
+                              //  System.out.println("Invalid selection. Try again.");
+                              //  break;
 
-                default:
-                    System.out.println("Invalid Option. Please Select Again.");
+                            case "X":
+                                System.out.println("Option X. Selected");
+                                System.out.println("you selected Option X." +
+                                        "........... Exiting App.");
+                                appProcessing = false;
+                                break;
+
+                            default:
+                                System.out.println("Invalid Option. Please Select Again.");
+                        }
+
+                    }
+
             }
-
         }
-
-    }
-
-}
-
 
         //  transaction objects print out. ,
         // sout needs the transaction class to override to string class overrides
